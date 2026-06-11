@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SKIES — Weather</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <!-- Atmospheric canvas -->
+  <canvas id="atmosphereCanvas"></canvas>
+
+  <!-- Ambient orbs -->
+  <div class="orb orb-a" id="orbA"></div>
+  <div class="orb orb-b" id="orbB"></div>
+  <div class="orb orb-c"></div>
+
+  <div class="app-shell">
+
+    <!-- Header -->
+    <header class="header" id="header">
+      <a class="logo" href="#">
+        <span class="logo-mark">◈</span>
+        <span class="logo-text">SKIES</span>
+      </a>
+
+      <div class="search-wrap" id="searchWrap">
+        <div class="search-bar" id="searchBar">
+          <svg class="search-icon" viewBox="0 0 20 20" fill="none">
+            <circle cx="9" cy="9" r="6.5" stroke="currentColor" stroke-width="1.5"/>
+            <path d="m14 14 3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <input type="text" id="searchInput" placeholder="City, country…" autocomplete="off" spellcheck="false"/>
+          <button class="search-btn" id="searchBtn" aria-label="Search">
+            <svg viewBox="0 0 16 16" fill="none">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Recent dropdown -->
+        <div class="dropdown" id="dropdown">
+          <div class="dropdown-header">
+            <span class="dropdown-label">Recent searches</span>
+            <button class="dropdown-clear" id="clearRecentBtn">Clear</button>
+          </div>
+          <ul class="dropdown-list" id="recentList"></ul>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="main">
+
+      <!-- ── INIT STATE ── -->
+      <div class="state state-init" id="stateInit">
+        <div class="init-glyph">
+          <svg viewBox="0 0 80 80" fill="none">
+            <circle cx="40" cy="40" r="30" stroke="url(#ig)" stroke-width="1" stroke-dasharray="4 4"/>
+            <circle cx="40" cy="40" r="18" stroke="url(#ig)" stroke-width="1.5" opacity="0.6"/>
+            <circle cx="40" cy="40" r="5" fill="url(#ig)" opacity="0.8"/>
+            <defs>
+              <linearGradient id="ig" x1="10" y1="10" x2="70" y2="70">
+                <stop offset="0%" stop-color="#00D4FF"/>
+                <stop offset="100%" stop-color="#A855F7"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <p class="init-label">Search a city to begin</p>
+      </div>
+
+      <!-- ── LOADING STATE ── -->
+      <div class="state state-loading hidden" id="stateLoading">
+        <div class="loader">
+          <div class="loader-ring r1"></div>
+          <div class="loader-ring r2"></div>
+          <div class="loader-ring r3"></div>
+          <div class="loader-dot"></div>
+        </div>
+        <p class="loading-label" id="loadingLabel">Locating…</p>
+      </div>
+
+      <!-- ── ERROR STATE ── -->
+      <div class="state state-error hidden" id="stateError">
+        <div class="error-glyph">✕</div>
+        <p class="error-msg" id="errorMsg">City not found.</p>
+        <button class="retry-btn" id="retryBtn">Try again</button>
+      </div>
+
+      <!-- ── WEATHER CARD ── -->
+      <div class="weather-card hidden" id="weatherCard">
+
+        <!-- Card inner glow overlay -->
+        <div class="card-glow" id="cardGlow"></div>
+
+        <!-- Hero row -->
+        <div class="hero">
+          <div class="hero-meta">
+            <div class="location-line">
+              <svg class="loc-pin" viewBox="0 0 16 20" fill="none">
+                <path d="M8 0C4.686 0 2 2.686 2 6c0 5.25 6 14 6 14s6-8.75 6-14c0-3.314-2.686-6-6-6z" fill="currentColor" opacity="0.7"/>
+                <circle cx="8" cy="6" r="2" fill="var(--bg)"/>
+              </svg>
+              <h1 class="city" id="cityName">—</h1>
+              <span class="country-badge" id="countryCode">—</span>
+            </div>
+            <p class="date-line" id="dateStr">—</p>
+            <div class="cond-line">
+              <img id="weatherIcon" class="cond-icon" src="" alt=""/>
+              <span class="cond-text" id="conditionText">—</span>
+            </div>
+          </div>
+
+          <div class="hero-temp">
+            <div class="temp-wrap">
+              <span class="temp-num" id="tempDisplay">—</span>
+              <span class="temp-deg">°C</span>
+            </div>
+            <div class="temp-range">
+              <span class="range-h" id="tempMax">—</span>
+              <span class="range-sep">/</span>
+              <span class="range-l" id="tempMin">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="card-divider"></div>
+
+        <!-- Stats grid -->
+        <div class="stats-grid">
+          <div class="stat-cell" data-delay="0">
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                <path d="M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z"/>
+                <circle cx="12" cy="9" r="2.5"/>
+              </svg>
+            </div>
+            <span class="stat-label">Feels like</span>
+            <span class="stat-val" id="feelsLike">—</span>
+          </div>
+          <div class="stat-cell" data-delay="1">
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                <path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                <circle cx="12" cy="12" r="5"/>
+              </svg>
+            </div>
+            <span class="stat-label">Humidity</span>
+            <span class="stat-val" id="humidity">—</span>
+          </div>
+          <div class="stat-cell" data-delay="2">
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/>
+              </svg>
+            </div>
+            <span class="stat-label">Wind</span>
+            <span class="stat-val" id="windSpeed">—</span>
+          </div>
+          <div class="stat-cell" data-delay="3">
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </div>
+            <span class="stat-label">Visibility</span>
+            <span class="stat-val" id="visibility">—</span>
+          </div>
+          <div class="stat-cell" data-delay="4">
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                <path d="M12 8v4l3 3"/>
+                <circle cx="12" cy="12" r="10"/>
+              </svg>
+            </div>
+            <span class="stat-label">Pressure</span>
+            <span class="stat-val" id="pressure">—</span>
+          </div>
+          <div class="stat-cell" data-delay="5">
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                <path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/>
+              </svg>
+            </div>
+            <span class="stat-label">UV Index</span>
+            <span class="stat-val" id="uvIndex">—</span>
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="card-divider"></div>
+
+        <!-- Sunrise / Sunset arc -->
+        <div class="sun-section">
+          <div class="sun-end">
+            <div class="sun-time-block">
+              <span class="sun-lbl">Sunrise</span>
+              <span class="sun-time" id="sunrise">—</span>
+            </div>
+          </div>
+          <div class="sun-arc-wrap">
+            <svg class="sun-arc-svg" viewBox="0 0 200 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Track -->
+              <path d="M10 72 Q100 8 190 72" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" stroke-linecap="round"/>
+              <!-- Progress path (clipped) -->
+              <path id="sunProgressPath" d="M10 72 Q100 8 190 72" stroke="url(#sunGrad)" stroke-width="2" stroke-linecap="round" stroke-dasharray="220" stroke-dashoffset="220"/>
+              <!-- Sun dot -->
+              <circle id="sunDot" cx="10" cy="72" r="6" fill="#FF9500">
+                <animate attributeName="r" values="6;7;6" dur="3s" repeatCount="indefinite"/>
+              </circle>
+              <circle id="sunGlow" cx="10" cy="72" r="10" fill="#FF9500" opacity="0.2">
+                <animate attributeName="r" values="10;14;10" dur="3s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0.2;0.08;0.2" dur="3s" repeatCount="indefinite"/>
+              </circle>
+              <defs>
+                <linearGradient id="sunGrad" x1="10" y1="72" x2="190" y2="72" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#FF9500"/>
+                  <stop offset="100%" stop-color="#FFD700"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <div class="sun-end right">
+            <div class="sun-time-block">
+              <span class="sun-lbl">Sunset</span>
+              <span class="sun-time" id="sunset">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- AQI bar -->
+        <div class="aqi-section" id="aqiSection" style="display:none">
+          <div class="aqi-header">
+            <span class="aqi-label">Air Quality</span>
+            <span class="aqi-level" id="aqiLevel">—</span>
+          </div>
+          <div class="aqi-track">
+            <div class="aqi-fill" id="aqiFill"></div>
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="card-divider"></div>
+
+        <!-- 5-Day forecast -->
+        <div class="forecast-section">
+          <p class="section-eyebrow">5-Day Forecast</p>
+          <div class="forecast-row" id="forecastRow"></div>
+        </div>
+
+      </div>
+      <!-- end .weather-card -->
+
+    </main>
+
+    <!-- Saved cities tray -->
+    <section class="tray hidden" id="tray">
+      <div class="tray-top">
+        <span class="tray-eyebrow">Saved cities</span>
+        <button class="tray-clear-btn" id="trayClearBtn">Clear all</button>
+      </div>
+      <div class="tray-chips" id="trayChips"></div>
+    </section>
+
+  </div><!-- end .app-shell -->
+
+  <script src="script.js"></script>
+</body>
+</html>
