@@ -1,9 +1,9 @@
-import React from 'react'
+import UseEffectOne from "./UseEffectOne"
 
 const App = () => {
   return (
-    <div>
-      
+    <div className="wrapper">
+      <UseEffectOne />
     </div>
   )
 }
