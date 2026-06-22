@@ -1,4 +1,3 @@
-import Parent from "./components/Parent"
 import MovieList from "./MovieList"
 import MovieProvider from "./MovieProvider"
 
