@@ -16,7 +16,7 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterDepartment, setFilterDepartment] = useState("");
 
-  const API_URL = "https://bootcamp-class-12-kbqj.onrender.com/employees";
+  const API_URL = "https://bootcamp-avyq.onrender.com/employees";
 
   // FETCH EMPLOYEES
   const getEmployees = async () => {
