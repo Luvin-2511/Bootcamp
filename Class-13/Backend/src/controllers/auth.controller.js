@@ -52,7 +52,11 @@ export async function registerController(req, res) {
   return res.status(201).json({
     success: true,
     message: "User registered successfully !",
-    data,
+    user:{
+      username,
+      email,
+      password:hashPassword
+    },
   });
 }
 
@@ -105,7 +109,7 @@ export async function loginController(req, res) {
   return res.status(201).json({
     success: true,
     message: "User Logged in successfully !",
-    userExist,
+    user:userExist,
   });
 }
 

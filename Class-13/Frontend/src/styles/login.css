@@ -1,0 +1,333 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background: #0f0f0f;
+  min-height: 100vh;
+}
+
+/* ─── Layout ─────────────────────────────── */
+.page {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+}
+
+/* ─── Left Panel ─────────────────────────── */
+.left-panel {
+  background: linear-gradient(145deg, #6c47ff 0%, #3b1fa8 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.brand {
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+
+.panel-text h1 {
+  font-size: 48px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.15;
+  letter-spacing: -1.5px;
+  margin-bottom: 16px;
+}
+
+.panel-text p {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.6;
+}
+
+/* decorative circles */
+.panel-circles {
+  position: absolute;
+  bottom: -60px;
+  right: -60px;
+}
+
+.circle {
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  position: absolute;
+}
+.c1 {
+  width: 280px;
+  height: 280px;
+  bottom: 0;
+  right: 0;
+}
+.c2 {
+  width: 200px;
+  height: 200px;
+  bottom: 40px;
+  right: 40px;
+  background: rgba(255, 255, 255, 0.04);
+}
+.c3 {
+  width: 110px;
+  height: 110px;
+  bottom: 85px;
+  right: 85px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* ─── Right Panel ────────────────────────── */
+.right-panel {
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 32px;
+}
+
+/* ─── Form Box ───────────────────────────── */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-box {
+  width: 100%;
+  max-width: 400px;
+  animation: slideIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.form-box h2 {
+  font-size: 32px;
+  font-weight: 800;
+  color: #111;
+  letter-spacing: -1px;
+  margin-bottom: 6px;
+}
+
+.sub {
+  font-size: 14px;
+  color: #999;
+  margin-bottom: 40px;
+}
+
+/* ─── Floating Label Field ───────────────── */
+.field {
+  position: relative;
+  margin-bottom: 24px;
+  animation: slideIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.field:nth-child(3) {
+  animation-delay: 0.07s;
+}
+.field:nth-child(4) {
+  animation-delay: 0.14s;
+}
+
+.field input {
+  width: 100%;
+  padding: 22px 48px 8px 18px;
+  font-size: 15px;
+  font-family: "Inter", sans-serif;
+  color: #111;
+  background: #f7f7f7;
+  border: 2px solid transparent;
+  border-radius: 14px;
+  outline: none;
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    box-shadow 0.2s;
+}
+
+.field label {
+  position: absolute;
+  top: 50%;
+  left: 18px;
+  transform: translateY(-50%);
+  font-size: 15px;
+  color: #aaa;
+  pointer-events: none;
+  transition:
+    top 0.2s,
+    font-size 0.2s,
+    color 0.2s;
+}
+
+/* float label when focused or filled */
+.field input:focus ~ label,
+.field input:not(:placeholder-shown) ~ label {
+  top: 10px;
+  font-size: 11px;
+  color: #6c47ff;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.field input:focus {
+  background: #fff;
+  border-color: #6c47ff;
+  box-shadow: 0 0 0 5px rgba(108, 71, 255, 0.1);
+}
+
+.field-icon {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+/* ─── Extras row ─────────────────────────── */
+.extras {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+  animation: slideIn 0.5s 0.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #555;
+  cursor: pointer;
+}
+
+.remember input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #6c47ff;
+  cursor: pointer;
+}
+
+.forgot {
+  font-size: 13px;
+  color: #6c47ff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.forgot:hover {
+  text-decoration: underline;
+}
+
+/* ─── Button ─────────────────────────────── */
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.btn {
+  width: 100%;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: "Inter", sans-serif;
+  color: #fff;
+  background: linear-gradient(90deg, #6c47ff, #a855f7, #6c47ff);
+  background-size: 200% auto;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  letter-spacing: 0.2px;
+  transition:
+    transform 0.15s,
+    box-shadow 0.2s;
+  animation: slideIn 0.5s 0.26s cubic-bezier(0.22, 1, 0.36, 1) both;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btn:hover {
+  animation: shimmer 1.6s linear infinite;
+  box-shadow: 0 10px 32px rgba(108, 71, 255, 0.45);
+  transform: translateY(-2px);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+/* ─── Switch ─────────────────────────────── */
+.switch {
+  text-align: center;
+  font-size: 14px;
+  color: #999;
+  margin-top: 24px;
+  animation: slideIn 0.5s 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.switch a {
+  color: #6c47ff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.switch a:hover {
+  text-decoration: underline;
+}
+
+/* ─── Responsive ─────────────────────────── */
+@media (max-width: 768px) {
+  .page {
+    grid-template-columns: 1fr;
+  }
+  .left-panel {
+    display: none;
+  }
+  .right-panel {
+    padding: 40px 24px;
+  }
+}
+
+.loader {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  border: 2px solid black;
+  border-bottom: 0px;
+  animation: rounder 0.5s ease infinite;
+}
+      
+@keyframes rounder {
+  from {
+    transform: rotate(0deg);
+  }to{
+    transform: rotate(360deg);
+  }
+}
+
+.error {
+  color: #ff4d4f;
+  margin-bottom: 10px;
+}
