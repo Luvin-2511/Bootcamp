@@ -1,12 +1,12 @@
 import axios from "axios";
 
 const apiInstance = axios.create({
-  baseURL: "http://localhost:3000/api/auth",
+  baseURL: import.meta.env.VITE_BACKEND_URI || "http://localhost:3000",
   withCredentials: true,
 });
 
 export const register = async ({ email, username, password }) => {
-  const res = await apiInstance.post("/register", {
+  const res = await apiInstance.post("/api/auth/register", {
     email,
     username,
     password,
@@ -15,7 +15,7 @@ export const register = async ({ email, username, password }) => {
 };
 
 export const login = async ({ email, password }) => {
-  const res = await apiInstance.post("/login", {
+  const res = await apiInstance.post("/api/auth/login", {
     email,
     password,
   });
@@ -23,6 +23,6 @@ export const login = async ({ email, password }) => {
 };
 
 export const Logout = async () => {
-  const res = await apiInstance.post("/logout");
+  const res = await apiInstance.post("/api/auth/logout");
   return res.data;
 };
